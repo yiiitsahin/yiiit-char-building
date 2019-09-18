@@ -1,11 +1,18 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-    </div>
-    <router-view/>
+    <char/>
   </div>
 </template>
+
+<script>
+import Char from './components/Char.vue'
+
+export default {
+  components: {
+    Char
+  }
+}
+</script>
 
 <style lang="scss">
 
