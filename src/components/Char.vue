@@ -11,11 +11,11 @@
 </template>
 
 <script>
-import abilities from "./Abilities.vue"
-import EventBus from "../eventbus.js"
+import abilities from './Abilities.vue'
+import EventBus from '../eventbus.js'
 
 export default {
-  data(){
+  data () {
     return {
       actionPoints: 0
     }
@@ -23,17 +23,12 @@ export default {
   components: {
     abilities
   },
-  computed: {
-    actionPoints(){
-      return 
-    }
-  },
-  created(){
-    EventBus.$on("actionPointUpdated", payload => {
-      this.actionPoints = payload;
+  created () {
+    EventBus.$on('actionPointUpdated', payload => {
+      this.actionPoints = payload
     })
   }
-};
+}
 </script>
 
 <style lang="scss">

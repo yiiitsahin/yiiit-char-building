@@ -7,82 +7,87 @@
 </template>
 
 <script>
-import ability from "./Ability.vue";
-import EventBus from "../eventbus.js"
+import ability from './Ability.vue'
+import EventBus from '../eventbus.js'
 
 export default {
-  data() {
+  data () {
     return {
       actionPoint: 25,
       allAbilities: [
         {
           id: 1,
-          name: "Agility",
-          value: 5
+          name: 'Agility',
+          value: 5,
+          max: 15
         },
         {
           id: 2,
-          name: "Speed",
-          value: 5
+          name: 'Speed',
+          value: 5,
+          max: 15
         },
         {
           id: 3,
-          name: "Power",
-          value: 5
+          name: 'Power',
+          value: 5,
+          max: 15
         },
         {
           id: 4,
-          name: "Intelligence",
-          value: 5
+          name: 'Intelligence',
+          value: 5,
+          max: 20
         },
         {
-          id: 5,  
-          name: "Life",
-          value: 5
+          id: 5,
+          name: 'Life',
+          value: 5,
+          max: 20
         }
       ]
-    };
+    }
   },
   components: {
     ability
   },
   computed: {
-    abilities() {
+    abilities () {
       return this.allAbilities.sort((a, b) => {
         if (a.name < b.name) {
-          return -1;
+          return -1
         }
         if (a.name > b.name) {
-          return 1;
+          return 1
         }
-        return 0;
-      });
+        return 0
+      })
     }
   },
-  created(){
-    EventBus.$emit("actionPointUpdated", this.actionPoint);
-    EventBus.$on("abilityIncreased", (ability) => {
-      this.actionPoint--;
-      this.allAbilities.map(item => { if(item.id === ability.id) item.value++})
+  created () {
+    EventBus.$emit('actionPointUpdated', this.actionPoint)
+    EventBus.$on('abilityIncreased', (ability) => {
+      this.actionPoint--
+      this.allAbilities.map(item => { if (item.id === ability.id) item.value++ })
     })
-    EventBus.$on("abilityDecreased", (ability) => {
-      if(ability.value > 0) {
-        this.actionPoint++;
-        this.allAbilities.map(item => { if(item.id === ability.id) item.value--})
-        if(this.actionPoint===1) EventBus.$emit("pointsNotOver");
+    EventBus.$on('abilityDecreased', (ability) => {
+      if (ability.value > 0) {
+        this.actionPoint++
+        this.allAbilities.map(item => { if (item.id === ability.id) item.value-- })
+        if (this.actionPoint === 1) EventBus.$emit('pointsNotOver')
       }
     })
   },
   watch: {
-    actionPoint(){
-      if(this.actionPoint === 0) {
-        EventBus.$emit("pointsOver")
+    actionPoint () {
+      if (this.actionPoint === 0) {
+        EventBus.$emit('pointsOver')
       }
 
-      EventBus.$emit("actionPointUpdated", this.actionPoint);
+      EventBus.$emit('actionPointUpdated', this.actionPoint)
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

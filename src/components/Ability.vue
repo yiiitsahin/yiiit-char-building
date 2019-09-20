@@ -1,43 +1,61 @@
 <template>
   <li class="ability">
-    <div>{{ability.name}}</div>
+    <div>{{ability.name}} (Max: {{ability.max}})</div>
 
     <div class="ability__buttons">
-      <span class="ability__button" :class="{'ability__button--disabled': !pointsAvailable}" @click="increment">+</span>
+      <button
+        class="ability__button"
+        :class="{'ability__button--disabled': ability.value <= 0}"
+        @click="decrement"
+        @keypress.enter="decrement"
+      >-</button>
       <span class="ability__point">{{ability.value}}</span>
-      <span class="ability__button" :class="{'ability__button--disabled': ability.value <= 0}" @click="decrement">-</span>
+      <button
+        class="ability__button"
+        :class="{'ability__button--disabled': !pointsAvailable || ability.value >= ability.max }"
+        @click="increment"
+        @keypress.tab="increment"
+      >+</button>
     </div>
+
+    <div class="ability__bar" :style="barStyle"></div>
   </li>
 </template>
 
 <script>
-import EventBus from "../eventbus.js"
+import EventBus from "../eventbus.js";
 
 export default {
-    data(){
-        return {
-            pointsAvailable: true
-        }
-    },
-    props: ["ability"],
-    methods: {
-      increment(){
-        if(this.pointsAvailable){
-          EventBus.$emit("abilityIncreased", this.ability);
-        }
-      },
-      decrement(){
-          EventBus.$emit("abilityDecreased", this.ability);
+  data() {
+    return {
+      pointsAvailable: true
+    };
+  },
+  props: ["ability"],
+  methods: {
+    increment() {
+      if (this.pointsAvailable && this.ability.max > this.ability.value) {
+        EventBus.$emit("abilityIncreased", this.ability);
       }
     },
-    created(){
-      EventBus.$on("pointsOver", () => {
-          this.pointsAvailable = false;
-      });
-      EventBus.$on("pointsNotOver", () => {
-          this.pointsAvailable = true;
-      });
+    decrement() {
+      if (this.ability.value !== 0)
+        EventBus.$emit("abilityDecreased", this.ability);
     }
+  },
+  computed: {
+    barStyle() {
+      return `width: ${(this.ability.value / this.ability.max) * 100}%`;
+    }
+  },
+  created() {
+    EventBus.$on("pointsOver", () => {
+      this.pointsAvailable = false;
+    });
+    EventBus.$on("pointsNotOver", () => {
+      this.pointsAvailable = true;
+    });
+  }
 };
 </script>
 
@@ -55,9 +73,22 @@ export default {
   margin-bottom: $gap;
   font-family: Arial, Helvetica, sans-serif;
   border-radius: $radius;
+  position: relative;
+  overflow: hidden;
+
+  &__bar {
+    display: block;
+    background-color: #ff000017;
+    position: absolute;
+    top: -1px;
+    left: 0;
+    height: 110%;
+    z-index: -1;
+    transition: width 0.2s ease;
+  }
 
   &:hover {
-      background-color: $btnBigHoverColor;
+    background-color: $btnBigHoverColor;
   }
 
   &__buttons {
@@ -80,7 +111,7 @@ export default {
     border: 1px solid $btnBorderColor;
     margin-left: $gap;
     cursor: pointer;
-    transition: opacity .1s ease;
+    transition: opacity 0.1s ease;
 
     &:hover,
     &--pressed {
@@ -88,10 +119,10 @@ export default {
     }
 
     &--disabled {
-      opacity: .2;
+      opacity: 0.2;
 
       &:hover {
-        opacity: .2;
+        opacity: 0.2;
         background-color: $btnColor;
       }
     }
