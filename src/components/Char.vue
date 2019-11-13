@@ -12,8 +12,6 @@
 
 <script>
 import abilities from './Abilities.vue'
-import EventBus from '../eventbus.js'
-
 import { mapGetters } from "vuex";
 
 export default {
