@@ -1,10 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import char from "./modules/char"
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        test: "Test form Vuex"
+    modules: {
+        char
     }
 });

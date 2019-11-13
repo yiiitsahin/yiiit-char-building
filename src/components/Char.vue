@@ -14,19 +14,14 @@
 import abilities from './Abilities.vue'
 import EventBus from '../eventbus.js'
 
+import { mapGetters } from "vuex";
+
 export default {
-  data () {
-    return {
-      actionPoints: 0
-    }
-  },
   components: {
     abilities
   },
-  created () {
-    EventBus.$on('actionPointUpdated', payload => {
-      this.actionPoints = payload
-    })
+  computed: {
+    ...mapGetters(['actionPoints']),
   }
 }
 </script>

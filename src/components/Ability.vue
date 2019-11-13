@@ -7,14 +7,12 @@
         class="ability__button"
         :class="{'ability__button--disabled': ability.value <= 0}"
         @click="decrement"
-        @keypress.enter="decrement"
       >-</button>
       <span class="ability__point">{{ability.value}}</span>
       <button
         class="ability__button"
-        :class="{'ability__button--disabled': !pointsAvailable || ability.value >= ability.max }"
+        :class="{'ability__button--disabled': pointsNotAvailable || ability.value >= ability.max }"
         @click="increment"
-        @keypress.tab="increment"
       >+</button>
     </div>
 
@@ -23,38 +21,26 @@
 </template>
 
 <script>
-import EventBus from "../eventbus.js";
+import { mapActions } from "vuex";
 
 export default {
-  data() {
-    return {
-      pointsAvailable: true
-    };
-  },
   props: ["ability"],
   methods: {
+    ...mapActions(['increaseAbility', 'decreaseAbility']),
     increment() {
-      if (this.pointsAvailable && this.ability.max > this.ability.value) {
-        EventBus.$emit("abilityIncreased", this.ability);
-      }
+      this.increaseAbility(this.ability);
     },
     decrement() {
-      if (this.ability.value !== 0)
-        EventBus.$emit("abilityDecreased", this.ability);
+      this.decreaseAbility(this.ability);
     }
   },
   computed: {
+    pointsNotAvailable(){
+        return this.$store.getters.actionPoints === 0;
+    },
     barStyle() {
       return `width: ${(this.ability.value / this.ability.max) * 100}%`;
     }
-  },
-  created() {
-    EventBus.$on("pointsOver", () => {
-      this.pointsAvailable = false;
-    });
-    EventBus.$on("pointsNotOver", () => {
-      this.pointsAvailable = true;
-    });
   }
 };
 </script>
