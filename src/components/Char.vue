@@ -1,8 +1,8 @@
 <template>
   <div class="character">
     <div class="char__info">
-        <p class="char__name">Name</p>
-        <p class="char__points">Toplam puan: {{actionPoints}}</p>
+        <p class="char__name">Example Char</p>
+        <p class="char__points">Toplam Puan: {{actionPoints}}</p>
     </div>
     <div class="char__abilities">
       <abilities />
